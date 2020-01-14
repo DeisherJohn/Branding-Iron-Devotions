@@ -1,8 +1,47 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://MainScreen/MainScreen.gd" type="Script" id=1]
+[ext_resource path="res://Container_Scenes/TextDisplayParser/TextDisplayParser.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Container_Scenes/PostList/PostList.tscn" type="PackedScene" id=3]
 
 [node name="MainScreen" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="Button" type="Button" parent="."]
+margin_left = 83.6002
+margin_top = 24.7
+margin_right = 270.6
+margin_bottom = 79.7
+text = "Get Headers"
+
+[node name="Button2" type="Button" parent="."]
+margin_left = 83.6002
+margin_top = 99.7502
+margin_right = 270.6
+margin_bottom = 154.75
+text = "Get Content"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_left = 18.0
+margin_top = 216.0
+margin_right = 342.0
+margin_bottom = 618.0
+
+[node name="TextDisplayParser" parent="MarginContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 324.0
+margin_bottom = 402.0
+
+[node name="PostList" parent="MarginContainer" instance=ExtResource( 3 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 324.0
+margin_bottom = 402.0
+[connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
+[connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]
+[connection signal="pressed" from="Button2" to="." method="_on_Button2_pressed"]

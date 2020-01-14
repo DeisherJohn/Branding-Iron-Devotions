@@ -21,13 +21,21 @@ extends Node
 const ROOT_DIR = "res://"
 const CONFIG_FILE_PATH = "config.cfg"
 
+const WP_JSON_ENDPOINTS = "/wp-json/wp/v2"
+
+var WP_USERS = WP_JSON_ENDPOINTS + "/users"
+var WP_POSTS = WP_JSON_ENDPOINTS + "/posts"
+
+
 var settings = {
 	"user_options":{
 		"save_posts":false,
 		"dark_mode":false
 	},
 	"paths":{
-		"wp_json_data":ROOT_DIR + "wp_data.json"
+		"base_site":"https://johndeisher.com",
+		"wp_json_data":ROOT_DIR + "wp_data.json",
+		"post_folder":ROOT_DIR + "posts/"
 	}
 }
 
@@ -35,9 +43,19 @@ var config = ConfigFile.new()
 
 func _ready():
 	var file = File.new()
-	var does_config_exist = file.file_exists(ROOT_DIR + CONFIG_FILE_PATH)
+	var dir_check = Directory.new()
 	
-	if not does_config_exist:
+	if not dir_check.dir_exists(settings["paths"]["post_folder"]):
+		print("Making Dir at: %s" %settings["paths"]["post_folder"])
+		
+		var dir_error = dir_check.make_dir(settings["paths"]["post_folder"])
+		
+		if dir_error != OK:
+			print("Could not make dir at path: %s" % settings["paths"]["post_folder"])
+		pass
+	
+	
+	if not file.file_exists(ROOT_DIR + CONFIG_FILE_PATH):
 		print("Saving settings to: %s%s"%[ROOT_DIR,CONFIG_FILE_PATH])
 		save_settings()
 	else:
@@ -79,6 +97,7 @@ func save_settings():
 func get_save_option():
 	#returns the "save_post" option
 	return settings["user_options"]["save_posts"]
+
 func set_save_option(value : bool = false):
 	#sets the save option into the config file
 	if value == null:
@@ -90,6 +109,7 @@ func set_save_option(value : bool = false):
 func get_dark_option():
 	#returns the "save_post" option
 	return settings["user_options"]["dark_mode"]
+
 func set_dark_option(value : bool = false):
 	if value == null:
 		return
@@ -100,3 +120,12 @@ func set_dark_option(value : bool = false):
 func get_wp_path():
 	#returns the path to the authors file
 	return settings["paths"]["wp_json_data"]
+	
+func get_wp_base():
+	return settings["paths"]["base_site"]
+	
+func get_user_path():
+	return get_wp_base() + WP_USERS
+	
+func get_post_path():
+	return get_wp_base() + WP_POSTS
