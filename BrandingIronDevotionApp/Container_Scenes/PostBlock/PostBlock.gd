@@ -20,7 +20,7 @@ func fill_data(post_id : int, title : String, read : bool = false, favorite : bo
 	pass
 
 func _on_Button_pressed():
-	print("Main button")
+	print("Main button: %s" % _title)
 	emit_signal("post_button_pressed", _post_id)
 	pass # Replace with function body.
 

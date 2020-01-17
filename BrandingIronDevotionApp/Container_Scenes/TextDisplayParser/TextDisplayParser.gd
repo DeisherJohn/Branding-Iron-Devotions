@@ -31,12 +31,7 @@ func parse_line(content):
 	if content == null or content == "":
 		return
 	
-	content = content.replace("&nbsp;", " ")
-	content = content.replace("&#8217;", "'")
-	content = content.replace("&#8220;", "\"")
-	content = content.replace("&#8221;", "\"")
-	content = content.replace("&#8230;", "...")
-	content = content.replace("\n", "")
+	content = PostManager.char_replacer(content)
 	
 	var tag = String()
 	var tag_extra = String()

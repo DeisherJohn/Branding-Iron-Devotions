@@ -18,7 +18,7 @@ extends Node
 #
 #	Contact me via email at john.deisher2013@gmail.com
 
-const ROOT_DIR = "res://"
+const ROOT_DIR = "user://"
 const CONFIG_FILE_PATH = "config.cfg"
 
 const WP_JSON_ENDPOINTS = "/wp-json/wp/v2"
@@ -35,7 +35,8 @@ var settings = {
 	"paths":{
 		"base_site":"https://johndeisher.com",
 		"wp_json_data":ROOT_DIR + "wp_data.json",
-		"post_folder":ROOT_DIR + "posts/"
+		"post_folder":ROOT_DIR + "posts/",
+		"most_recent_post":""
 	}
 }
 
@@ -89,7 +90,6 @@ func load_settings():
 func save_settings():
 	for section in settings:
 		for key in settings[section]:
-			print("Section: %s, Key: %s" %[section, key])
 			config.set_value(section, key, settings[section][key])
 	
 	config.save(ROOT_DIR + CONFIG_FILE_PATH)
@@ -129,3 +129,10 @@ func get_user_path():
 	
 func get_post_path():
 	return get_wp_base() + WP_POSTS
+	
+func set_most_recent(value):
+	settings["paths"]["most_recent_post"] = value
+	save_settings()
+	
+func get_most_recent():
+	return settings["paths"]["most_recent_post"]
