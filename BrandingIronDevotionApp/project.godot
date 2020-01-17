@@ -17,18 +17,21 @@ _global_script_class_icons={
 
 config/name="BrandingIronDevotionApp"
 run/main_scene="res://MainScreen/MainScreen.tscn"
-run/low_processor_mode=true
 config/icon="res://icon.png"
 
 [autoload]
 
 ConfigManager="*res://Global_Scripts/ConfigManager.gd"
 PostManager="*res://Global_Scripts/PostManager.gd"
+httpRequester="*res://Global_Scripts/httpRequester.gd"
 
 [display]
 
 window/size/width=360
 window/size/height=640
+window/handheld/orientation="portrait"
+window/stretch/mode="2d"
+window/stretch/aspect="keep"
 
 [rendering]
 

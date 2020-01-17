@@ -20,9 +20,12 @@ extends Node
 
 const FIRST_POST_ID = 47
 
+enum REQUEST_TYPE {NONE, AUTHOR, POSTS, CONTENT}
+
 var WP_LOCAL_DATA = ConfigManager.get_wp_path()
 
 var wp_fields = ["author", "id", "title", "date"]
+
 var wp_json_lib = {
 	"authors":{
 		
@@ -47,8 +50,6 @@ func _ready():
 		#load the file
 		print("Loading settings from: %s"%WP_LOCAL_DATA)
 		load_json_dict()
-	
-	print("REQUEST: %s" % get_post_content_request_string(445))
 
 func field_joiner(fields : Array = []):
 	
@@ -56,6 +57,17 @@ func field_joiner(fields : Array = []):
 		return ""
 	
 	return PoolStringArray(fields).join(",")
+
+func char_replacer(data_string):
+	data_string = data_string.replace("&nbsp;", " ")
+	data_string = data_string.replace("&#8217;", "'")
+	data_string = data_string.replace("&#8220;", "\"")
+	data_string = data_string.replace("&#8221;", "\"")
+	data_string = data_string.replace("&#8230;", "...")
+	data_string = data_string.replace("&#8211;", "-")
+	data_string = data_string.replace("\n", "")
+	
+	return data_string
 	
 func save_json_dict():
 	var file = File.new()
@@ -102,6 +114,9 @@ func get_post_header(post_id : int):
 	return wp_json_lib["posts"][str(post_id)]
 
 func save_post_header(post_id : int, author : int, title : String, date : String, saved : bool = false, read : bool = false):
+	
+	title = char_replacer(title)
+	
 	wp_json_lib["posts"][str(post_id)] = {
 		"author":author,
 		"title":title,
@@ -109,6 +124,8 @@ func save_post_header(post_id : int, author : int, title : String, date : String
 		"saved":saved,
 		"read":read
 	}
+	
+	ConfigManager.set_most_recent(date)
 	save_json_dict()
 	pass
 
@@ -196,6 +213,16 @@ func get_post_request_string(newest_post : String = "", number_of_posts : int = 
 	request_parms += "&per_page=" + str(number_of_posts)
 	
 	return  ConfigManager.get_post_path() + request_parms
+
+func get_author_request_string(author_id : int = -1):
+	var request_string = ConfigManager.get_user_path() + "/"
+	
+	if author_id != -1:
+		request_string += str(author_id)
+	
+	request_string += "?_fields=id,name"
+	
+	return request_string
 
 func get_post_content_request_string(post_id : int):
 	var fields = ["id","content"]
